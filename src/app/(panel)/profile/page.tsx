@@ -14,6 +14,7 @@ export default function Profile(){
     const [ barber, setBarber ] = useState({id: 0, title: ''});
     const [ showPickerDate, setShowPickerDate ] = useState(false);
     const [ showPickerTime, setShowPickerTime ] = useState(false);
+    const [ reserva, setReserva ] = useState({date:'', barber:''});
 
     // const emojisWithIcons = [
     //     {title: 'happy', icon: 'emoticon-happy-outline'},
@@ -50,8 +51,10 @@ export default function Profile(){
             Alert.alert('Error', 'Selecione uma data.')
         else if(barber.id == 0)
             Alert.alert('Error', 'Selecione um barbeiro.')
-        else
+        else{
             Alert.alert('Success', 'Horario: '+dateInput+' Barbeiro: '+barber!.title)
+            setReserva({date: dateInput, barber: barber.title})
+        }
         return;
     }
 
@@ -138,45 +141,87 @@ export default function Profile(){
                 </View>  
                 <Text style={styles.label}> Data/Hora </Text>
                 <Text> {dateInput}</Text>
-                <View style={{paddingTop: 14}}>
-                    <SelectDropdown
-                        data={people}
-                        onSelect={(selectedItem, index) => {
-                        //console.log(selectedItem, index);
-                        setBarber(selectedItem);
-                        }}
-                        renderButton={(selectedItem, isOpened) => {
-                        return (
-                            <View style={styles.dropdownButtonStyle}>
-                            {/* {selectedItem && (
-                                <Icon name={selectedItem.icon} style={styles.dropdownButtonIconStyle} />
-                            )} */}
-                            <Text style={styles.dropdownButtonTxtStyle}>
-                                {(selectedItem && selectedItem.title) || 'Escolha o barbeiro'}
-                            </Text>
-                            <Icon name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
+                <View style={{flexDirection:'row'}}>
+                    <View style={{paddingTop: 14, width:'60%'}}>
+                        <SelectDropdown
+                            data={people}
+                            onSelect={(selectedItem, index) => {
+                            //console.log(selectedItem, index);
+                            setBarber(selectedItem);
+                            }}
+                            renderButton={(selectedItem, isOpened) => {
+                            return (
+                                <View style={styles.dropdownButtonStyle}>
+                                {/* {selectedItem && (
+                                    <Icon name={selectedItem.icon} style={styles.dropdownButtonIconStyle} />
+                                )} */}
+                                <Text style={styles.dropdownButtonTxtStyle}>
+                                    {(selectedItem && selectedItem.title) || 'Escolher Barbeiro'}
+                                </Text>
+                                <Icon name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
+                                </View>
+                            );
+                            }}
+                            renderItem={(item, index, isSelected) => {
+                            return (
+                                <View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
+                                {/* <Icon name={item.icon} style={styles.dropdownItemIconStyle} /> */}
+                                <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
+                                </View>
+                            );
+                            }}
+                            showsVerticalScrollIndicator={false}
+                            dropdownStyle={styles.dropdownMenuStyle}
+                        />
+                    </View>
+                    <View style={{width:'60%'}}>
+                        <Pressable style={styles.button} onPress={validateForm}>
+                                <Text style={styles.buttonText}>
+                                Agendar
+                                </Text>
+                        </Pressable> 
+                    </View>
+                </View>        
+                {reserva.date!=='' && reserva.barber!==''&&(      
+                    <View style={{marginTop: 100}}>
+                        <Text style={styles.slogan}>
+                        Agendamento Pendente
+                        </Text>
+                        <View style={{flexDirection:'row'}}>
+                            <View style={{width:'80%'}}>
+                                <Text>
+                                Horario: {reserva.date}
+                                </Text>
+                                <Text>
+                                Barbeiro: {reserva.barber}
+                                </Text>
                             </View>
-                        );
-                        }}
-                        renderItem={(item, index, isSelected) => {
-                        return (
-                            <View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
-                            <Icon name={item.icon} style={styles.dropdownItemIconStyle} />
-                            <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
+                            <View>
+                            <Icon name={'delete'} style={styles.dropdownItemIconStyle} onPress={()=>{setReserva({date:'', barber:''})}}/>
                             </View>
-                        );
-                        }}
-                        showsVerticalScrollIndicator={false}
-                        dropdownStyle={styles.dropdownMenuStyle}
-                    />
-                </View>
-                <View style={{paddingTop: 34, alignItems: 'center'}}>
-                    <Pressable style={styles.button} onPress={validateForm}>
-                            <Text style={styles.buttonText}>
-                            Agendar
-                            </Text>
-                    </Pressable> 
-                </View>
+                        </View>
+                    </View>
+                )}
+                {reserva.date!=='' && reserva.barber!==''&&(      
+                    <View style={{marginTop: 100}}>
+                        <Text style={styles.slogan}>
+                        Agendamento Aprovado
+                        </Text>
+                        <View style={{flexDirection:'row'}}>
+                            <View style={{width:'80%'}}>
+                                <Text>
+                                Horario: {reserva.date}
+                                </Text>
+                                <Text>
+                                Barbeiro: {reserva.barber}
+                                </Text>
+                            </View>
+                            <View>
+                            <Icon name={'delete'} style={styles.dropdownItemIconStyle} onPress={()=>{setReserva({date:'', barber:''})}}/>
+                            </View>
+                        </View>
+                    </View>
+                )}
             </View>
         </View>
     );
@@ -232,7 +277,8 @@ const styles = StyleSheet.create({
             buttonSecondary:{
                 backgroundColor: Colors.zinc,
                 paddingTop: 14,
-                marginRight: 20,
+                marginLeft: 5,
+                marginRight: 50,
                 paddingBottom: 14,
                 marginBottom: 16,
                 alignItems: 'center',
@@ -245,8 +291,10 @@ const styles = StyleSheet.create({
                 backgroundColor: Colors.green,
                 paddingTop: 14,
                 marginRight: 20,
+                marginLeft: 20,
                 paddingBottom: 14,
                 marginBottom: 16,
+                marginTop: 16,
                 alignItems: 'center',
                 justifyContent: 'center',
                 width: '40%',
@@ -265,7 +313,7 @@ const styles = StyleSheet.create({
                 width: '40%'
             },
             dropdownButtonStyle: {
-                width: 250,
+                width: 200,
                 height: 50,
                 backgroundColor: '#E9ECEF',
                 borderRadius: 12,
@@ -308,5 +356,6 @@ const styles = StyleSheet.create({
               dropdownItemIconStyle: {
                 fontSize: 28,
                 marginRight: 8,
+                color: 'red'
               },
 });
