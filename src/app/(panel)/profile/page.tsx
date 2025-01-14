@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { supabase } from '@/src/lib/supabase';
 import { View, Text, StyleSheet, Button, Alert, TextInput, Pressable, Platform } from 'react-native'
-import Colors from '@/constants/colors';
+import Colors from '@/constants/Colors';
 import DateTimePicker from '@react-native-community/datetimepicker'
 import SelectDropdown from 'react-native-select-dropdown'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
